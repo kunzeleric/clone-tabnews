@@ -3,20 +3,26 @@ import { database } from "infra/database.js";
 export default async function status(request, response) {
   const updatedAt = new Date().toISOString();
 
-  const version = await database.query("SHOW server_version;");
+  const databaseVersionResult = await database.query("SHOW server_version;");
+  const databaseVersionValue = databaseVersionResult.rows[0].server_version;
 
-  const openedConnections = await database.query(
-    "SELECT count(*)::int as open_connections FROM pg_stat_activity WHERE datname = 'postgres' AND state = 'active';",
+  const openedConnectionsResult = await database.query(
+    "SELECT count(*) as open_connections FROM pg_stat_activity WHERE datname = 'postgres' AND state = 'active';",
   );
-  const maxConnections = await database.query(
-    "SELECT setting::int as max_connections FROM pg_settings WHERE name = 'max_connections';",
+  const openedConnectionsValue = parseInt(
+    openedConnectionsResult.rows[0].open_connections,
+  );
+
+  const maxConnectionsResult = await database.query("SHOW max_connections");
+  const maxConnectionsValue = parseInt(
+    maxConnectionsResult.rows[0].max_connections,
   );
 
   const dependencies = {
     database: {
-      version: parseFloat(version.rows[0].server_version),
-      opened_connections: openedConnections.rows[0].open_connections,
-      max_connections: maxConnections.rows[0].max_connections,
+      version: databaseVersionValue,
+      opened_connections: openedConnectionsValue,
+      max_connections: maxConnectionsValue,
     },
   };
 

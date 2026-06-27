@@ -13,8 +13,7 @@ test("GET to /api/v1/status should return 200", async () => {
   const databaseDependency = responseBody.dependencies.database;
 
   // postgres version
-  const parsedPostgresVersion = parseFloat(databaseDependency.version);
-  expect(databaseDependency.version).toEqual(parsedPostgresVersion);
+  expect(databaseDependency.version).toEqual("16.0");
 
   // postgres max connections
   expect(databaseDependency.max_connections).toBeDefined();
