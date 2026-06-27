@@ -22,5 +22,5 @@ export async function query(queryObject) {
 }
 
 export const database = {
-  query: query,
+  query,
 };
