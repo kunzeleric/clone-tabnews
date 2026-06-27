@@ -9,8 +9,8 @@
     "lint:fix": "prettier --write .",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "docker:compose-up": "docker compose -f infra/compose.yaml up -d",
-    "docker:compose-down": "docker compose -f infra/compose.yaml --project-directory . down"
+    "services:up": "docker compose -f infra/compose.yaml up -d",
+    "services:down": "docker compose -f infra/compose.yaml --project-directory . down"
   },
   "keywords": [],
   "author": "",
