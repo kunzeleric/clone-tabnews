@@ -15,12 +15,12 @@ export async function query(queryObject) {
 
   try {
     await client.connect();
-
     const result = await client.query(queryObject);
 
     return result;
   } catch (error) {
     console.error("Error on query: ", { error });
+    throw error;
   } finally {
     await client.end();
   }
