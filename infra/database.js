@@ -12,13 +12,18 @@ export function createPgClient() {
 
 export async function query(queryObject) {
   const client = createPgClient();
-  await client.connect();
 
-  const result = await client.query(queryObject);
+  try {
+    await client.connect();
 
-  await client.end();
+    const result = await client.query(queryObject);
 
-  return result;
+    return result;
+  } catch (error) {
+    console.error("Error on query: ", { error });
+  } finally {
+    await client.end();
+  }
 }
 
 export const database = {
