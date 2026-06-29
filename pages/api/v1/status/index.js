@@ -6,9 +6,14 @@ export default async function status(request, response) {
   const databaseVersionResult = await database.query("SHOW server_version;");
   const databaseVersionValue = databaseVersionResult.rows[0].server_version;
 
-  const openedConnectionsResult = await database.query(
-    "SELECT count(*) as open_connections FROM pg_stat_activity WHERE datname = 'postgres' AND state = 'active';",
-  );
+  const databaseName = process.env.POSTGRES_DB;
+  const openedConnectionsResult = await database.query({
+    text: "SELECT count(*) as open_connections FROM pg_stat_activity WHERE datname = $1;",
+    values: [databaseName],
+  });
+
+  // "SELECT count(*) as open_connections FROM pg_stat_activity WHERE datname = 'postgres' AND state = 'active';"
+
   const openedConnectionsValue = parseInt(
     openedConnectionsResult.rows[0].open_connections,
   );
