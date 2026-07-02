@@ -38,6 +38,6 @@ export default async function status(request, response) {
     });
   } catch (error) {
     console.error("Server Internal Error", { error });
-    return response.status(500);
+    return response.status(500).send("Erro interno no servidor.");
   }
 }
