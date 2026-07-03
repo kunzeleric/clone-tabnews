@@ -2,40 +2,42 @@ import migrationRunner from "node-pg-migrate";
 import { join } from "node:path";
 import { database } from "infra/database.js";
 
-export default async function migration(request, response) {
-  const dbClient = await database.getNewClient();
+const allowedMethods = ["GET", "POST"];
 
-  const defaultMigrationsConfig = {
+function getMigrationOptions(dbClient, liveRun) {
+  return {
     dbClient,
     dir: join("infra", "migrations"),
     direction: "up",
     verbose: true,
     migrationsTable: "pgmigrations",
-    dryRun: true,
+    dryRun: !liveRun,
   };
+}
 
-  if (request.method === "GET") {
-    const pendingMigrations = await migrationRunner(defaultMigrationsConfig);
-
-    await dbClient.end();
-
-    return response.status(200).json(pendingMigrations);
+export default async function migration(request, response) {
+  if (!allowedMethods.includes(request.method)) {
+    return response.status(405).end();
   }
 
-  if (request.method === "POST") {
-    const migratedMigrations = await migrationRunner({
-      ...defaultMigrationsConfig,
-      dryRun: false, // POST should run migrations with dryRun set to false
-    });
+  let dbClient;
+  try {
+    dbClient = await database.getNewClient();
 
+    const isLiveRun = request.method === "POST";
+
+    const migrationOptions = getMigrationOptions(dbClient, isLiveRun);
+
+    const migrations = await migrationRunner(migrationOptions);
+
+    // if migrations were run, return 201 Created, otherwise return 200 OK
+    const responseStatus = migrations.length > 0 ? 201 : 200;
+
+    return response.status(responseStatus).json(migrations);
+  } catch (error) {
+    console.error("Error running migrations:", error);
+    throw error;
+  } finally {
     await dbClient.end();
-
-    if (migratedMigrations.length > 0) {
-      return response.status(201).json(migratedMigrations);
-    }
-
-    return response.status(200).json(migratedMigrations);
   }
-
-  return response.status(405).end();
 }
