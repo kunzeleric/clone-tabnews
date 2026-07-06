@@ -17,7 +17,9 @@ function getMigrationOptions(dbClient, liveRun) {
 
 export default async function migration(request, response) {
   if (!allowedMethods.includes(request.method)) {
-    return response.status(405).end();
+    return response
+      .status(405)
+      .json({ error: `Method ${request.method} Not Allowed` });
   }
 
   let dbClient;
@@ -30,7 +32,7 @@ export default async function migration(request, response) {
 
     const migrations = await migrationRunner(migrationOptions);
 
-    // if migrations were run, return 201 Created, otherwise return 200 OK
+    // if migrations were run return 201, otherwise 200
     const responseStatus = migrations.length > 0 ? 201 : 200;
 
     return response.status(responseStatus).json(migrations);
