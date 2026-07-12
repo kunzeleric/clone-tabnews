@@ -33,7 +33,7 @@ export default async function migration(request, response) {
     const migrations = await migrationRunner(migrationOptions);
 
     // if migrations were run return 201, otherwise 200
-    const responseStatus = migrations.length > 0 ? 201 : 200;
+    const responseStatus = isLiveRun && migrations.length > 0 ? 201 : 200;
 
     return response.status(responseStatus).json(migrations);
   } catch (error) {
