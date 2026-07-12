@@ -11,10 +11,14 @@ async function waitForAllServices() {
     });
 
     async function fetchStatusPage(bail, tryNumber) {
-      const response = await fetch("http://localhost:3000/api/v1/status");
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/status");
 
-      if (response.status !== 200) {
-        throw new Error(`Status page returned ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`Status page returned ${response.status}`);
+        }
+      } catch (error) {
+        throw error;
       }
     }
   }
