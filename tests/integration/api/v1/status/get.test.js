@@ -22,7 +22,7 @@ test("GET to /api/v1/status should return 200", async () => {
   // TODO: fix this -> postgres version in PROD is returned as "16.0 (v....)"
   // so this test will always fail in PROD
   // postgres version
-  expect(databaseVersion).toEqual("16.0");
+  expect(databaseVersion).toContain("16.0");
 
   // postgres max connections
   expect(databaseDependency.max_connections).toBeDefined();
