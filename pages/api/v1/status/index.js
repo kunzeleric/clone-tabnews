@@ -13,8 +13,6 @@ export default async function status(request, response) {
       values: [databaseName],
     });
 
-    // "SELECT count(*) as open_connections FROM pg_stat_activity WHERE datname = 'postgres' AND state = 'active';"
-
     const openedConnectionsValue = parseInt(
       openedConnectionsResult.rows[0].open_connections,
     );

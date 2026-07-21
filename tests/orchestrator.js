@@ -10,7 +10,7 @@ async function waitForAllServices() {
       maxTimeout: 2_000,
     });
 
-    async function fetchStatusPage(bail, tryNumber) {
+    async function fetchStatusPage() {
       try {
         const response = await fetch("http://localhost:3000/api/v1/status");
 
@@ -18,6 +18,7 @@ async function waitForAllServices() {
           throw new Error(`Status page returned ${response.status}`);
         }
       } catch (error) {
+        console.error(error);
         throw error;
       }
     }
