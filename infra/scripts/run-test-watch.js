@@ -16,7 +16,7 @@ if (!runScriptCommand("npm run migrations:up")) {
 console.log("\n🚀 Inicializando Next.js e Jest para bateria de testes...");
 
 const testProcess = spawn(
-  'npm run services:up && concurrently -n next,jest --hide next -k -s command-jest "next dev" "jest --watchAll --runInBand"',
+  'npm run services:up && concurrently -n next,jest --hide next -k -s command-jest "next dev" "jest --watchAll --runInBand --verbose"',
   {
     stdio: "inherit",
     shell: true,
