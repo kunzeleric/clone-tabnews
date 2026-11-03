@@ -21,9 +21,6 @@ describe("GET to /api/v1/status", () => {
       const databaseDependency = responseBody.dependencies.database;
       const databaseVersion = databaseDependency.version;
 
-      // TODO: fix this -> postgres version in PROD is returned as "16.0 (v....)"
-      // so this test will always fail in PROD
-      // postgres version
       expect(databaseVersion).toContain("16.0");
 
       // postgres max connections
